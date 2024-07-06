@@ -12,7 +12,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(InvalidProductIdException.class)
     public ResponseEntity<String> handleInvalidProductIdException(InvalidProductIdException ex) {
         ExceptionDto exceptionDto = new ExceptionDto();
-        exceptionDto.setMessage("Invalid product id");
+        exceptionDto.setMessage(ex.getMessage());
         return new ResponseEntity<>(exceptionDto.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

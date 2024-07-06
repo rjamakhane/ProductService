@@ -35,12 +35,12 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product) throws InvalidProductIdException {
         return productService.updateProduct(id, product);
     }
 
     @PutMapping("/{id}")
-    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
+    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product) throws InvalidProductIdException {
         return productService.replaceProduct(id, product);
     }
 
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public Product deleteProduct(@PathVariable("id") Long id){
+    public Product deleteProduct(@PathVariable("id") Long id) throws InvalidProductIdException {
         return productService.deleteProduct(id);
     }
 }
