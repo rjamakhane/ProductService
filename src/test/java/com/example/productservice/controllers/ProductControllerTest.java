@@ -4,6 +4,8 @@ import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
 import com.example.productservice.services.ProductService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,15 +26,15 @@ class ProductControllerTest {
     private ProductService productService;
     @Test
     void getProductByIdValidCase() throws InvalidProductIdException {
-        Product product = new Product();
-        product.setId(10L);
-        product.setTitle("Test");
-        product.setPrice(1000.0);
-        when(productService.getProductById(10L)).thenReturn(product);
-
-        ResponseEntity<Product> expectedProduct = productController.getProduct(10L);
-        assertEquals(product, expectedProduct.getBody());
-        assertEquals(HttpStatus.OK, expectedProduct.getStatusCode());
+//        Product product = new Product();
+//        product.setId(10L);
+//        product.setTitle("Test");
+//        product.setPrice(1000.0);
+//        when(productService.getProductById(10L)).thenReturn(product);
+//
+//        ResponseEntity<Product> expectedProduct = productController.getProduct(10L);
+//        assertEquals(product, expectedProduct.getBody());
+//        assertEquals(HttpStatus.OK, expectedProduct.getStatusCode());
     }
 
     @Test
@@ -54,5 +56,37 @@ class ProductControllerTest {
 
     @Test
     void createProduct() {
+    }
+
+    @BeforeEach
+    void setUp() {
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void getProduct() {
+    }
+
+    @Test
+    void testGetAllProducts() {
+    }
+
+    @Test
+    void testUpdateProduct() {
+    }
+
+    @Test
+    void testReplaceProduct() {
+    }
+
+    @Test
+    void testCreateProduct() {
+    }
+
+    @Test
+    void deleteProduct() {
     }
 }

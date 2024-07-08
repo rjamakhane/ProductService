@@ -6,6 +6,7 @@ import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
 import com.example.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +30,10 @@ public class ProductController {
     }
 
     @GetMapping("/")
-    public List<Product> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        return new ResponseEntity<>(new ArrayList<Product>(products), HttpStatus.OK).getBody();
+    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortDirection") String sortDirection, @RequestParam("sortBy") String sortBy){
+//        localhost:2020/products/?pageNumber=0&pageSize=10
+        Page<Product> products = productService.getAllProducts(pageNumber,pageSize, sortDirection, sortBy);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

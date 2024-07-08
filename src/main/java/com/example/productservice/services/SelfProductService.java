@@ -6,6 +6,10 @@ import com.example.productservice.modals.Product;
 import com.example.productservice.repositories.CategoryRepository;
 import com.example.productservice.repositories.ProductRepository;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -13,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("selfProductService")
+@Primary
 public class SelfProductService implements ProductService{
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
@@ -33,9 +38,13 @@ public class SelfProductService implements ProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String sortDirection, String sortBy) {
         //fetch all the products from db
-        return  productRepository.findAll();
+        if(sortDirection.equals("asc")){
+            return productRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending()));
+        } else {
+            return productRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending()));
+        }
     }
 
     @Override

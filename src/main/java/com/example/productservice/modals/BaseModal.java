@@ -14,7 +14,6 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-
 public abstract class BaseModal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
