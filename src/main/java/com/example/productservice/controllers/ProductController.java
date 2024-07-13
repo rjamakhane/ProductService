@@ -1,6 +1,8 @@
 package com.example.productservice.controllers;
 
+import com.example.productservice.commons.AuthenticationCommons;
 import com.example.productservice.dtos.FakeStoreProductDTO;
+import com.example.productservice.dtos.UserDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
@@ -18,9 +20,11 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
+    private AuthenticationCommons authenticationCommons;
 
-    ProductController(@Qualifier("selfProductService") ProductService productService) {
+    ProductController(@Qualifier("selfProductService") ProductService productService, AuthenticationCommons authenticationCommons) {
         this.productService = productService;
+        this.authenticationCommons = authenticationCommons;
     }
 
     @GetMapping("/{id}")
@@ -29,9 +33,13 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortDirection") String sortDirection, @RequestParam("sortBy") String sortBy){
+    @GetMapping("/all/{token}")
+    public ResponseEntity<Page<Product>> getAllProducts(@PathVariable("token") String token, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortDirection") String sortDirection, @RequestParam("sortBy") String sortBy){
 //        localhost:2020/products/?pageNumber=0&pageSize=10
+        UserDto userDto = authenticationCommons.validateToken(token);
+        if(userDto == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         Page<Product> products = productService.getAllProducts(pageNumber,pageSize, sortDirection, sortBy);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
