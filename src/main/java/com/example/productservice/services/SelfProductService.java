@@ -1,5 +1,6 @@
 package com.example.productservice.services;
 
+import com.example.productservice.dtos.UserDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +23,12 @@ import java.util.Optional;
 public class SelfProductService implements ProductService{
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
+    private RestTemplate restTemplate;
 
-    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository){
+    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository, RestTemplate restTemplate){
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.restTemplate = restTemplate;
     }
     @Override
     public Product getProductById(Long id) throws InvalidProductIdException {
@@ -32,6 +36,8 @@ public class SelfProductService implements ProductService{
         if(optionalProduct.isEmpty()){
             throw new InvalidProductIdException("Invalid Product Id: " + id);
         }
+        // if product is not found, then return null or you can also
+        UserDto userDto = restTemplate.getForObject("http://UserService/users/" + id, UserDto.class);
         // throw product not found exception
         return optionalProduct.orElse(null);
 
