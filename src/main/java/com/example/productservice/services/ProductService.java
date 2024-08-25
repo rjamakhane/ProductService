@@ -2,6 +2,7 @@ package com.example.productservice.services;
 
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Product;
+import com.example.productservice.modals.ProductDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,5 @@ public interface ProductService {
     Product updateProduct(Long id, Product product) throws InvalidProductIdException;
     Product replaceProduct(Long id, Product product) throws InvalidProductIdException;
     Product deleteProduct(Long id) throws InvalidProductIdException;
-
+    Page<ProductDocument> searchByProductName(String productName,int pageNumber, int pageSize, String sortDirection);
 }

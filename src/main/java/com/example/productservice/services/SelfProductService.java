@@ -4,8 +4,10 @@ import com.example.productservice.dtos.UserDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
+import com.example.productservice.modals.ProductDocument;
 import com.example.productservice.repositories.CategoryRepository;
 import com.example.productservice.repositories.ProductRepository;
+import com.example.productservice.repositories.elasticsearch.ProductDocumentRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,12 +25,14 @@ import java.util.Optional;
 public class SelfProductService implements ProductService{
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
+    ProductDocumentRepository productDocumentRepository;
     private RestTemplate restTemplate;
 
-    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository, RestTemplate restTemplate){
+    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository, RestTemplate restTemplate, ProductDocumentRepository productDocumentRepository){
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.restTemplate = restTemplate;
+        this.productDocumentRepository = productDocumentRepository;
     }
     @Override
     public Product getProductById(Long id) throws InvalidProductIdException {
@@ -60,7 +64,19 @@ public class SelfProductService implements ProductService{
             category = categoryRepository.save(category);
             product.setCategory(category);
         }
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        try{
+            ProductDocument productDocument = new ProductDocument();
+            productDocument.setId(savedProduct.getId().toString());
+            productDocument.setTitle(savedProduct.getTitle());
+            productDocument.setDescription(savedProduct.getDescription());
+            productDocument.setPrice(savedProduct.getPrice());
+            ProductDocument prd = productDocumentRepository.save(productDocument);
+        } catch (Exception e){
+            System.out.println("Error while saving product: " + e.getMessage());
+        }
+
+        return savedProduct;
     }
 
     @Override
@@ -121,5 +137,16 @@ public class SelfProductService implements ProductService{
         Product product = optionalProduct.get();
         productRepository.delete(product);
         return product;
+    }
+
+    @Override
+    public Page<ProductDocument> searchByProductName(String productName, int pageNumber, int pageSize, String sortDirection) {
+        Pageable pageable;
+        if ("asc".equalsIgnoreCase(sortDirection)) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.by("title.keyword").ascending());
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.by("title.keyword").descending());
+        }
+        return productDocumentRepository.findAllByTitleContaining(productName, pageable);
     }
 }

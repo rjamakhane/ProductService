@@ -6,6 +6,7 @@ import com.example.productservice.dtos.UserDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
+import com.example.productservice.modals.ProductDocument;
 import com.example.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,12 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         Page<Product> products = productService.getAllProducts(pageNumber,pageSize, sortDirection, sortBy);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{searchString}")
+    public ResponseEntity<Page<ProductDocument>> getAllProducts(@PathVariable("searchString") String searchString, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortDirection") String sortDirection){
+        Page<ProductDocument> products = productService.searchByProductName(searchString, pageNumber,pageSize, sortDirection);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

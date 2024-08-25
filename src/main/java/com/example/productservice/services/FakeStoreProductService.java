@@ -4,6 +4,7 @@ import com.example.productservice.dtos.FakeStoreProductDTO;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.modals.Category;
 import com.example.productservice.modals.Product;
+import com.example.productservice.modals.ProductDocument;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -110,4 +111,11 @@ public class FakeStoreProductService implements ProductService{
         FakeStoreProductDTO fakeStoreProductDTO = restTemplate.exchange("https://fakestoreapi.com/products/" + id, HttpMethod.DELETE, null, FakeStoreProductDTO.class).getBody();
         return fakeStoreProductDTO != null ? convertFakeStoreProductDTOtoProduct(fakeStoreProductDTO) : null;
     }
+
+    @Override
+    public Page<ProductDocument> searchByProductName(String productName, int pageNumber, int pageSize, String sortDirection) {
+        return null;
+    }
+
+
 }
